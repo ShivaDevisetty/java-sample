@@ -1,31 +1,24 @@
 pipeline {
-    agent any
-
-    environment {
-        function_name = 'java-sample'
+    agent {
+		label 'angular'
     }
 
     stages {
-        stage('Build') {
+        stage('install') {
             steps {
-                echo 'Build'
-                sh 'mvn package'
+                sh 'npm install'
             }
         }
 
-        stage('Push') {
+        stage('build') {
             steps {
-                echo 'Push'
-
-                sh "aws s3 cp target/sample-1.0.3.jar s3://bermtecjavasample000"
+                sh "npm run build"
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Build'
-
-                sh "aws lambda update-function-code --function-name $function_name --region us-east-1 --s3-bucket bermtecjavasample000 --s3-key sample-1.0.3.jar"
+                sh "npm run deploy"
             }
         }
     }
